@@ -1,77 +1,67 @@
-import { Button, FlatList, Image, StyleSheet, TextInput } from "react-native";
+import { Button, FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [todos, setTodos] = useState<string[]>([]);
   const [value, setValue] = useState("");
+
+  const handleCreateButtonPress = () => {
+    setTodos((prev) => [...prev, value]);
+    setValue("");
+  };
   return (
-    // <SafeAreaProvider>
-    //   <SafeAreaView style={styles.titleContainer}>
-    //     <View>
-    //       <Text style={styles.item}>wefwef</Text>
-    //     </View>
-    //   </SafeAreaView>
-    // </SafeAreaProvider>
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <View>
+          <Text style={styles.title}>Todos</Text>
+          <FlatList
+            data={todos}
+            renderItem={({ item, index }) => (
+              <Text style={styles.item}>
+                {index + 1}. {item}
+              </Text>
+            )}
+            keyExtractor={(item) => item}
+          />
+        </View>
+        <TextInput
+          style={styles.input}
+          value={value}
+          onChangeText={(text) => setValue(text)}
+          placeholderTextColor={"#aaa"}
+          placeholder="Create Todo"
         />
-      }>
-      <ThemedText style={styles.titleContainer} type="title">
-        Todo List
-      </ThemedText>
-      <TextInput
-        style={{ color: "white" }}
-        value={value}
-        onChangeText={(text) => setValue(text)}
-        placeholderTextColor={"#fff"}
-        placeholder="Create Todo"
-      />
-      <Button onPress={() => setTodos((prev) => [...prev, value])} title="Create" />
-      <ThemedView>
-        <SafeAreaProvider>
-          <SafeAreaView>
-            <FlatList
-              data={todos}
-              renderItem={({ item }) => <ThemedText>{item}</ThemedText>}
-              keyExtractor={(item) => item}
-            />
-          </SafeAreaView>
-        </SafeAreaProvider>
-      </ThemedView>
-    </ParallaxScrollView>
+        <Button onPress={handleCreateButtonPress} title="Create" color={"gray"} />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-  },
-  item: {
-    color: "#f0d",
+  container: {
+    height: "100%",
+    backgroundColor: "#000",
+    padding: 10,
   },
   title: {
-    color: "#1D3D47",
+    color: "#fff",
+    fontSize: 32,
+    textAlign: "center",
+    margin: 20,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "blue",
+    padding: 10,
+    borderRadius: 10,
+    color: "#fff",
+    marginBlockStart: 20,
+    marginBlockEnd: 20,
+  },
+  item: {
+    fontSize: 16,
+    color: "#f0d",
   },
 });
